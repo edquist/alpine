@@ -256,6 +256,10 @@
 #define GLO_NEWS_ACTIVE_PATH	     vars[V_NEWS_ACTIVE_PATH].global_val.p
 #define VAR_NEWS_SPOOL_DIR	     vars[V_NEWS_SPOOL_DIR].current_val.p
 #define GLO_NEWS_SPOOL_DIR	     vars[V_NEWS_SPOOL_DIR].global_val.p
+#ifndef _WINDOWS
+#define VAR_MAILDIR_LOCATION	     vars[V_MAILDIR_LOCATION].current_val.p
+#define GLO_MAILDIR_LOCATION	     vars[V_MAILDIR_LOCATION].global_val.p
+#endif
 #define VAR_DISABLE_DRIVERS	     vars[V_DISABLE_DRIVERS].current_val.l
 #define VAR_DISABLE_AUTHS	     vars[V_DISABLE_AUTHS].current_val.l
 #define VAR_REMOTE_ABOOK_METADATA    vars[V_REMOTE_ABOOK_METADATA].current_val.p

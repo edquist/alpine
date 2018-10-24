@@ -5545,6 +5545,12 @@ fix_side_effects(struct pine *ps, struct variable *var, int revert)
 			  (void *)var->current_val.p);
     }
 #endif
+#ifndef _WINDOWS
+    else if(var == &ps->vars[V_MAILDIR_LOCATION]){
+      if(var->current_val.p && var->current_val.p[0])
+	mail_parameters(NULL, SET_MDINBOXPATH, (void *)var->current_val.p);
+    }
+#endif
     else if(revert && standard_radio_var(ps, var)){
 
 	cur_rule_value(var, TRUE, FALSE);

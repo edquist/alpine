@@ -438,6 +438,9 @@ CONF_TXT_T cf_text_window_position[] =	"Window position in the format: CxR+X+Y\n
 
 CONF_TXT_T cf_text_newsrc_path[] =		"Full path and name of NEWSRC file";
 
+#ifndef _WINDOWS
+CONF_TXT_T cf_text_maildir_location[] = "Location relative to your HOME directory of the directory where your INBOX\n# for the maildir format is located. Default value is \"Maildir\". If your\n# inbox is located at \"~/Maildir\" you do not need to change this value.\n# A common value is also \".maildir\"";
+#endif
 
 /*----------------------------------------------------------------------
 These are the variables that control a number of pine functions.  They
@@ -644,6 +647,10 @@ static struct variable variables[] = {
 	NULL,			cf_text_news_active},
 {"news-spool-directory",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0,
 	NULL,			cf_text_news_spooldir},
+#ifndef _WINDOWS
+{"maildir-location",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0,
+	"Maildir Location",			cf_text_maildir_location},
+#endif
 {"upload-command",			0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0,
 	NULL,			cf_text_upload_cmd},
 {"upload-command-prefix",		0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0,
@@ -2301,6 +2308,12 @@ init_vars(struct pine *ps, void (*cmds_f) (struct pine *, char **))
       mail_parameters(NULL, SET_NEWSSPOOL,
 		      (void *)VAR_NEWS_SPOOL_DIR);
 
+#ifndef _WINDOWS
+    set_current_val(&vars[V_MAILDIR_LOCATION], TRUE, TRUE);
+    if(VAR_MAILDIR_LOCATION && VAR_MAILDIR_LOCATION[0])
+      mail_parameters(NULL, SET_MDINBOXPATH, (void *)VAR_MAILDIR_LOCATION);
+#endif
+
     /* guarantee a save default */
     set_current_val(&vars[V_DEFAULT_SAVE_FOLDER], TRUE, TRUE);
     if(!VAR_DEFAULT_SAVE_FOLDER || !VAR_DEFAULT_SAVE_FOLDER[0])
@@ -2930,6 +2943,10 @@ feature_list(int index)
 	 F_SORT_DEFAULT_SAVE_ALPHA, h_config_sort_save_alpha, PREF_FLDR, 0},
 	{"vertical-folder-list", "Use Vertical Folder List",
 	 F_VERTICAL_FOLDER_LIST, h_config_vertical_list, PREF_FLDR, 0},
+#ifndef _WINDOWS
+	{"use-courier-folder-list", "Courier Style Folder List",
+	 F_COURIER_FOLDER_LIST, h_config_courier_list, PREF_FLDR, 0},
+#endif
 
 /* Addr book */
 	{"combined-addrbook-display", "Combined Address Book Display",
@@ -7036,7 +7053,7 @@ toggle_feature(struct pine *ps, struct variable *var, FEATURE_S *f,
 	       int just_flip_value, EditWhich ew)
 {
     char      **vp, *p, **lval, ***alval;
-    int		og, on_before, was_set;
+    int		og, on_before, was_set, i;
     char       *err;
     long	l;
 
@@ -7088,6 +7105,13 @@ toggle_feature(struct pine *ps, struct variable *var, FEATURE_S *f,
 	       "news-approximates-new-status won't affect current newsgroup until next open");
 
 	break;
+
+#ifndef _WINDOWS
+      case F_COURIER_FOLDER_LIST:
+      i = F_ON(f->id ,ps) ? 1 : 0;
+      mail_parameters(NULL,SET_COURIERSTYLE, (void *) &i);
+      break; /* COURIER == 1, CCLIENT == 0, see maildir.h */
+#endif
 
       case F_COLOR_LINE_IMPORTANT :
       case F_DATES_TO_LOCAL :
@@ -7877,6 +7901,10 @@ config_help(int var, int feature)
 	return(h_config_newmailwidth);
       case V_NEWSRC_PATH :
 	return(h_config_newsrc_path);
+#ifndef _WINDOWS
+      case V_MAILDIR_LOCATION :
+	return(h_config_maildir_location);
+#endif
       case V_BROWSER :
 	return(h_config_browser);
       case V_HISTORY :

@@ -22364,6 +22364,102 @@ your account's home directory).
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_maildir_location ======
+<HTML>
+<HEAD>
+<TITLE>OPTION: <!--#echo var="VAR_maildir-location"--></TITLE>
+</HEAD>
+<BODY>
+<H1>OPTION: <!--#echo var="VAR_maildir-location"--></H1>
+
+<P>
+This option should be used only if you have a Maildir folder which you
+want to use as your INBOX. If this is not your case (or don't know what
+this is), you can safely ignore this option.
+
+<P>
+This option overrides the default directory Pine uses to find the location of
+your INBOX, in case this is in Maildir format. The default value of this
+option is "Maildir", but in some systems, this directory could have been
+renamed (e.g. to ".maildir"). If this is your case use this option to change
+the default.
+
+<P>
+The value of this option is prefixed with the "~/" string to determine the
+full path to your INBOX.
+
+<P>
+You should probably <A HREF="h_config_maildir">read</A> a few tips that 
+teach you how to configure your maildir for optimal performance. This
+version also has <A HREF="h_config_courier_list">support</A> for the 
+Courier style file system when a maildir collection is accessed locally.
+
+<P><UL>
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL>
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_maildir =====
+<HTML>
+<HEAD>
+<TITLE>Maildir Support</TITLE>
+</HEAD>
+<BODY>
+<H1>Maildir Support</H1>
+
+This version of Alpine has been enhanced with Maildir support. This text is 
+intended to be a reference on its support.
+<P>
+
+A Maildir folder is a directory that contains three directories called 
+cur, tmp and new. A program that delivers mail (e.g. postfix) will put new 
+mail in the new directory. A program that reads mail will look for for old 
+messages in the cur directory, while it will look for new mail in the new 
+directory.
+<P>
+
+In order to use maildir support it is better to set your inbox-path to the 
+value &quot;#md/inbox&quot; (without quotes). This assumes that your mail 
+delivery agent is delivering new mail to ~/Maildir/new. If the directory 
+where new mail is being delivered is not called "Maildir", you can set the 
+name of the subdirectory of home where it is being delivered in the <A 
+HREF="h_config_maildir_location"><!--#echo var="VAR_maildir-location"--></A> configuration 
+variable. Most of the time you will not have to worry about the 
+<!--#echo var="VAR_maildirlocation"--> variable, because it will probably be set by your 
+administrator in the pine.conf configuration file.
+<P>
+
+One of the advantages of the Maildir support of this version of Alpine is 
+that you do not have to stop using folders in another styles (mbox, mbx, 
+etc.). This is desirable since the usage of a specific mail storage system 
+is a personal decision. Folders in the maildir format that are part of the 
+Mail collection will be recognized without any extra configuration of your 
+part. If your mail/ collection is located under the mail/ directory, then 
+creating a new maildir folder in this collection is done by pressing "A" 
+and entering the string "#driver.md/mail/newfolder". Observe that adding a 
+new folder as "newfolder" may not create such folder in maildir format.
+
+<P>
+If you would like to have all folders created in the maildir format by 
+default, you do so by adding a Maildir Collection. In order to convert 
+your current mail/ collection into a maildir collection, edit the 
+collection and change the path variable from &quot;mail/&quot; to 
+&quot;#md/mail&quot;. In a maildir collection folders of any other format 
+are ignored.
+
+<P> Finally, This version also has 
+<A HREF="h_config_courier_list">support</A> for the Courier style file system 
+when a maildir collection is accessed locally.
+
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_literal_sig =====
 <HTML>
 <HEAD>
@@ -30443,6 +30539,49 @@ in the FOLDER LIST display.
 This feature controls an aspect of Alpine's FOLDER LIST screen.  If set,
 the folders will be listed alphabetically down the columns rather
 than across the columns as is the default.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_courier_list =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: <!--#echo var="FEAT_courier-folder-list"--></TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: <!--#echo var="FEAT_courier-folder-list"--></H1>
+
+In a maildir collection, a folder could be used as a directory to store 
+folders. In the Courier server if you create a folder, then a directory 
+with the same name is created. If you use this patch to access a 
+collection created by the Courier server, then the display of such 
+collection will look confusing. The best way to access a maildir 
+collection created by the Courier server is by using the &quot;#mc/&quot; 
+prefix instead of the &quot;#md/&quot; prefix. If you use this alternate 
+prefix, then this feature applies to you, otherwise you can safely ignore 
+the text that follows.
+<P>
+Depending on if you have enabled the option 
+<a href="h_config_separate_fold_dir_view"><!--#echo var="FEAT_separate-folder-and-directory-entries"--></a> 
+a folder may be listed as &quot;folder[.]&quot;, or as two entries in the 
+list by &quot;folder&quot; and &quot;folder.&quot;.
+<P>
+If this option is disabled, Pine will list local folders that are in Courier
+style format, as &quot;folder&quot;, and those that are also directories as
+&quot;folder[.]&quot;. This makes the default display cleaner.
+<P>
+If this feature is enabled then creating folders in a maildir collection
+will create a directory with the same name. If this feature is disabled, then 
+a folder is considered a directory only if it contains subfolders, so you can
+not create a directory with the same name as an exisiting folder unless 
+you create a subfolder of that folder first (e.g. if you have a folder
+called &quot;foo&quot; simply add &quot;foo.bar&quot; directly. This will
+create the directory &quot;foo&quot; and the subfolder &quot;bar&quot; of it).
+<P>
+Observe that this feature works only for maildir collections that are accessed
+locally. If a collection is accessed remotely then this feature has no value,
+as the report is created in a server, and Pine only reports what received
+from the server in this case.
 <P>
 &lt;End of help on this topic&gt;
 </BODY>

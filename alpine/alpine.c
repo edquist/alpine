@@ -576,6 +576,11 @@ main(int argc, char **argv)
     if(F_ON(F_MAILDROPS_PRESERVE_STATE, ps_global))
       mail_parameters(NULL, SET_SNARFPRESERVE, (void *) TRUE);
 
+#ifndef _WINDOWS
+    rv = F_ON(F_COURIER_FOLDER_LIST, ps_global) ? 1 : 0;
+    mail_parameters(NULL,SET_COURIERSTYLE, (void *) &rv);
+#endif
+
     rvl = 0L;
     if(pine_state->VAR_NNTPRANGE){
 	if(!SVAR_NNTPRANGE(pine_state, rvl, tmp_20k_buf, SIZEOF_20KBUF))
