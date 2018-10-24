@@ -3273,7 +3273,9 @@ IMAPPARSEDREPLY *imap_send_astring (MAILSTREAM *stream,char *tag,char **s,
     }
   case '\0':			/* not a CHAR */
   case '\012': case '\015':	/* not a TEXT-CHAR */
+#if 0
   case '"': case '\\':		/* quoted-specials (IMAP2 required this) */
+#endif
     return imap_send_literal (stream,tag,s,&st);
   case '*': case '%':		/* list_wildcards */
     if (wildok) break;		/* allowed if doing the wild thing */
@@ -3286,7 +3288,10 @@ IMAPPARSEDREPLY *imap_send_astring (MAILSTREAM *stream,char *tag,char **s,
     break;
   }
   if (qflag) *(*s)++ = '"';	/* write open quote */
-  for (j = 0; j < as->size; j++) *(*s)++ = as->data[j];
+  for (j = 0; j < as->size; j++) {
+    if (as->data[j] == '"' || as->data[j] == '\\') *(*s)++ = '\\';
+    *(*s)++ = as->data[j];
+  }
   if (qflag) *(*s)++ = '"';	/* write close quote */
   return NIL;
 }
